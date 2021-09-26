@@ -1,0 +1,49 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "COVID-19 Confirmed Cases per 1000 people",
+  "width": 800,
+  "height": 600,
+  "projection": {"type": "equirectangular"},
+  "data": {
+    "url": "https://raw.githubusercontent.com/KaneSec/vega_lite/main/3_choropleth_map/js/ne_110m_admin_0_countries.topojson",
+    "format": {"type": "topojson", "feature": "ne_110m_admin_0_countries"}
+  },
+  "transform": [
+    {
+      "lookup": "properties.NAME",
+      "from": {
+        "data": {
+          "url": "https://raw.githubusercontent.com/RuohaoZhao/3179-Homework-9/main/Covid19%20-%20HM9.csv"
+        },
+        "key": "Country/Region",
+        "fields": ["Confirmed"]
+      }
+    },
+    {"calculate": "datum.Confirmed/1000", "as": "Confirmed per 1000 people"}
+  ],
+  "mark": {"type": "geoshape"},
+  "encoding": {
+    "color": {
+      "field": "Confirmed",
+      "type": "quantitative",
+      "scale": {
+        "type": "log",
+        "domain": [1, 100, 10000],
+        "range": ["#fdbe85", "#fd8d3c", "#e6550d", "#a63603"]
+      }
+    },
+    "tooltip": [
+      {
+        "field": "properties.NAME",
+        "type": "nominal",
+        "title": "Country/Region"
+      },
+      {
+        "field": "Confirmed per 1000 people",
+        "type": "quantitative",
+        "title": "Confirmed per 1000 people",
+        "format": ".2f"
+      }
+    ]
+  }
+}
